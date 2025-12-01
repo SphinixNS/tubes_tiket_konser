@@ -3,7 +3,6 @@
 #include <string.h>
 #include "view.h"
 
-
 int main()
 {
     main_menu();

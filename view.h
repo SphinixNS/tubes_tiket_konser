@@ -4,5 +4,7 @@
 
 void main_menu();
 void konser();
+void tambah_data( int a, int b);
+void register_user();
 
 #endif
