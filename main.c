@@ -3,7 +3,6 @@
 #include <string.h>
 #include "view.h"
 
-
 int main()
 {
     printf("Hello World");
