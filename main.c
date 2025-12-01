@@ -6,6 +6,6 @@
 
 int main()
 {
-    printf("Hello World");
+    main_menu();
     return 0;
 }
