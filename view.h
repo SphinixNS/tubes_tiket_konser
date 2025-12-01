@@ -4,5 +4,7 @@
 
 void main_menu();
 void konser();
+void tampilMenuAwal();
+void tampilanRegister();
 
 #endif

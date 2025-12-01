@@ -5,6 +5,7 @@
 
 int main()
 {
-    printf("Hello World");
+    tampilMenuAwal();
+    tampilanRegister();
     return 0;
 }
