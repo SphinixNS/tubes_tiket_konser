@@ -11,11 +11,6 @@ int main()
     menuUser();
     lihatDaftarKonser();
     detailKonser();
-    tampilanKursi();
-    formPemesananTiket();
-    tampilanTiketSaya();
-    tampilanSearchKonser();
-    tampilanSortingKonser();
-    tampilanLogout();
+    
     return 0;
 }

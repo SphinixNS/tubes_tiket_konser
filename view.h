@@ -10,11 +10,5 @@ void tampilanLogin();
 void menuUser();
 void lihatDaftarKonser();
 void detailKonser();
-void tampilanKursi();
-void formPemesananTiket();
-void tampilanTiketSaya();
-void tampilanSearchKonser();
-void tampilanSortingKonser();
-void tampilanLogout();
 
 #endif
