@@ -12,16 +12,12 @@ void countdownClear(int count)
     {
         printf("\r[%s] ", "\\");
         Sleep(250);
-
         printf("\r[%s] ", "|");
         Sleep(250);
-
         printf("\r[%s] ", "/");
         Sleep(250);
-
         printf("\r[%s] ", "-");
         Sleep(250);
-
         fflush(stdout);
     }
 

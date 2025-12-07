@@ -14,16 +14,22 @@ struct Konser
     char nama[100];
     char lokasi[50];
     char tanggal[15];
-    int harga;
-    char deskripsi[200];
+    int hargaVIP;
+    int hargaReguler;
+    int jumlahTiketVIP;
+    int jumlahTiketReguler;
+    char deskripsi[500];
 };
 
 struct Tiket
 {
+    int idKonser;
+    char namaPembeli[50];
     char namaKonser[50];
-    char kursi[5];
-    char tanggal[20];
-    int harga;
+    char jenisTiket[20];
+    int jumlah;
+    int totalHarga;
+    char tanggal[15];
 };
 
 extern struct Akun daftarAkun[100];
@@ -46,11 +52,11 @@ void tampilanLogin();
 void menuUser();
 void lihatDaftarKonser();
 void detailKonser(int idKonser);
-void tampilanKursi(char kursiTerpilih[]);
-void formPemesananTiket(char namaKonser[], int hargaKonser, char kursi[], char tanggal[]);
+void formPemesananTiket(int idKonser);
 void lihatTiketSaya();
 void searchConcert();
 void sortingKonser();
+void detailTiket(int idTiket);
 
 
 

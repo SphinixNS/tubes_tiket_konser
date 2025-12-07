@@ -52,13 +52,13 @@ void daftarKonserAdmin()
     printf("                          DAFTAR KONSER\n");
     printf("===========================================================================\n");
     printf(" %-3s | %-25s | %-15s | %-11s | %-10s\n",
-           "No", "Nama Konser", "Lokasi", "Tanggal", "Harga");
+           "ID", "Nama Konser", "Lokasi", "Tanggal", "Harga");
     printf("---------------------------------------------------------------------------\n");
 
     for (int i = 0; i < jumlahKonser; i++)
     {
-        printf(" %-3d | %-25s | %-15s | %-11s | %d\n",
-               konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].harga);
+        printf(" %-3d | %-25s | %-15s | %-11s | Reg:%d  VIP:%d\n",
+               konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].hargaReguler, konserList[i].hargaVIP);
     }
     printf("===========================================================================\n");
     int idKonser;
@@ -101,12 +101,15 @@ void detailKonserAdmin(int idKonser)
     printf("\n===============================================================\n");
     printf("                          DETAIL KONSER\n");
     printf("===============================================================\n");
-    printf("ID Konser      : %d\n", k.id);
-    printf("Nama           : %s\n", k.nama);
-    printf("Lokasi         : %s\n", k.lokasi);
-    printf("Tanggal        : %s\n", k.tanggal);
-    printf("Harga          : %d\n", k.harga);
-    printf("Deskripsi      :\n%s\n", k.deskripsi);
+    printf("ID Konser       : %d\n", k.id);
+    printf("Nama            : %s\n", k.nama);
+    printf("Lokasi          : %s\n", k.lokasi);
+    printf("Tanggal         : %s\n", k.tanggal);
+    printf("Harga VIP       : %d\n", k.hargaVIP);
+    printf("Kuota VIP       : %d\n", k.jumlahTiketVIP);
+    printf("Harga Reguler   : %d\n", k.hargaReguler);
+    printf("Kuota Reguler   : %d\n", k.jumlahTiketReguler);
+    printf("Deskripsi       :\n%s\n", k.deskripsi);
     printf("===============================================================\n");
     printf("1. Edit\n");
     printf("2. Kembali\n");
@@ -142,16 +145,23 @@ void tambahKonser()
     printf("=====================================================\n");
     printf("                 TAMBAH DATA KONSER                  \n");
     printf("=====================================================\n\n");
-    printf("Nama Konser       : ");
+    printf("Nama konser : ");
     scanf(" %[^\n]", k.nama);
-    printf("Lokasi            : ");
+    printf("Lokasi konser : ");
     scanf(" %[^\n]", k.lokasi);
-    printf("Tanggal (DD-MM-YYYY) : ");
+    printf("Tanggal konser : ");
     scanf(" %[^\n]", k.tanggal);
-    printf("Harga (angka saja)   : ");
-    scanf("%d", &k.harga);
-    printf("Deskripsi (maks 200 char):\n> ");
+    printf("Deskripsi konser : ");
     scanf(" %[^\n]", k.deskripsi);
+    printf("\n== Input Harga Tiket ==\n");
+    printf("Harga tiket VIP      : ");
+    scanf("%d", &k.hargaVIP);
+    printf("Jumlah tiket VIP     : ");
+    scanf("%d", &k.jumlahTiketVIP);
+    printf("Harga tiket Reguler  : ");
+    scanf("%d", &k.hargaReguler);
+    printf("Jumlah tiket Reguler : ");
+    scanf("%d", &k.jumlahTiketReguler);
 
     jumlahKonser++;
     k.id = jumlahKonser;
@@ -167,17 +177,24 @@ void editKonser(int idKonser)
     struct Konser *k = &konserList[idKonser];
 
     printf("\n=================== DATA LAMA =======================\n");
-    printf("Nama           : %s\n", k->nama);
-    printf("Lokasi         : %s\n", k->lokasi);
-    printf("Tanggal        : %s\n", k->tanggal);
-    printf("Harga          : %d\n", k->harga);
-    printf("Deskripsi      :\n%s\n\n", k->deskripsi);
+    printf("ID Konser       : %d\n", k->id);
+    printf("Nama            : %s\n", k->nama);
+    printf("Lokasi          : %s\n", k->lokasi);
+    printf("Tanggal         : %s\n", k->tanggal);
+    printf("Harga VIP       : %d\n", k->hargaVIP);
+    printf("Kuota VIP       : %d\n", k->jumlahTiketVIP);
+    printf("Harga Reguler   : %d\n", k->hargaReguler);
+    printf("Kuota Reguler   : %d\n", k->jumlahTiketReguler);
+    printf("Deskripsi       :\n%s\n", k->deskripsi);
     printf("=============== MASUKKAN DATA BARU =================\n");
 
     char nama[50];
     char lokasi[30];
     char tanggal[15];
-    int harga;
+    int hargaVIP;
+    int hargaReguler;
+    int jumlahVIPBaru;
+    int jumlahRegBaru;
     char deskripsi[200];
     printf("Nama Baru [%s]: ", k->nama);
     scanf(" %[^\n]", nama);
@@ -185,8 +202,14 @@ void editKonser(int idKonser)
     scanf(" %[^\n]", lokasi);
     printf("Tanggal Baru [%s]: ", k->tanggal);
     scanf(" %[^\n]", tanggal);
-    printf("Harga Baru [%d]: ", k->harga);
-    scanf("%d", &harga);
+    printf("Harga VIP baru [%d]: ", k->hargaVIP);
+    scanf("%d", &hargaVIP);
+    printf("Jumlah tiket VIP baru [%d]: ", k->jumlahTiketVIP);
+    scanf("%d", &jumlahVIPBaru);
+    printf("Harga Reguler baru [%d]: ", k->hargaReguler);
+    scanf("%d", &hargaReguler);
+    printf("Jumlah tiket Reguler baru [%d]: ", k->jumlahTiketReguler);
+    scanf("%d", &jumlahRegBaru);
     printf("Deskripsi Baru:\n> ");
     scanf(" %[^\n]", deskripsi);
 
@@ -194,23 +217,32 @@ void editKonser(int idKonser)
     printf("=====================================================\n");
     printf("              KONFIRMASI DATA KONSER EDIT            \n");
     printf("=====================================================\n\n");
-    printf("Nama           : %s\n", nama);
-    printf("Lokasi         : %s\n", lokasi);
-    printf("Tanggal        : %s\n", tanggal);
-    printf("Harga          : %d\n", harga);
-    printf("Deskripsi      :\n%s\n", deskripsi);
+    printf("Nama            : %s\n", nama);
+    printf("Lokasi          : %s\n", lokasi);
+    printf("Tanggal         : %s\n", tanggal);
+    printf("Harga VIP       : %d\n", hargaVIP);
+    printf("Kuota VIP       : %d\n", jumlahVIPBaru);
+    printf("Harga Reguler   : %d\n", hargaReguler);
+    printf("Kuota Reguler   : %d\n", jumlahRegBaru);
+    printf("Deskripsi       :\n%s\n\n", deskripsi);
 
-    printf("\n=====================================================\n");
+    printf("=====================================================\n");
     printf("Apakah Anda yakin ingin menyimpan perubahan? (y/n): ");
     char konfirmasi;
     scanf(" %c", &konfirmasi);
+
     if (konfirmasi == 'y' || konfirmasi == 'Y')
     {
         strcpy(k->nama, nama);
         strcpy(k->lokasi, lokasi);
         strcpy(k->tanggal, tanggal);
-        k->harga = harga;
+        k->hargaVIP = hargaVIP;
+        k->jumlahTiketVIP = jumlahVIPBaru;
+        k->hargaReguler = hargaReguler;
+        k->jumlahTiketReguler = jumlahRegBaru;
         strcpy(k->deskripsi, deskripsi);
+
+        printf("\nPerubahan berhasil disimpan!\n");
     }
     else
     {
@@ -219,7 +251,6 @@ void editKonser(int idKonser)
         daftarKonserAdmin();
         return;
     }
-    printf("Perubahan berhasil disimpan!\n");
 
     countdownClear(3);
     daftarKonserAdmin();
@@ -237,8 +268,9 @@ void hapusKonser()
 
     for (int i = 0; i < jumlahKonser; i++)
     {
-        printf(" %-3d | %-25s | %-15s | %-11s | %d\n",
-               konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].harga);
+        printf(" %-3d | %-25s | %-15s | %-11s | Reg:%d  VIP:%d\n",
+               konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal,
+               konserList[i].hargaReguler, konserList[i].hargaVIP);
     }
     printf("===========================================================================\n");
     int idKonser;
@@ -273,12 +305,13 @@ void hapusKonser()
     printf("                KONFIRMASI PENGHAPUSAN              \n");
     printf("=====================================================\n\n");
 
-    printf("ID             : %d\n", konserList[target].id);
-    printf("Nama           : %s\n", konserList[target].nama);
-    printf("Lokasi         : %s\n", konserList[target].lokasi);
-    printf("Tanggal        : %s\n", konserList[target].tanggal);
-    printf("Harga          : %d\n", konserList[target].harga);
-    printf("Deskripsi      :\n%s\n\n", konserList[target].deskripsi);
+    printf("ID              : %d\n", konserList[target].id);
+    printf("Nama            : %s\n", konserList[target].nama);
+    printf("Lokasi          : %s\n", konserList[target].lokasi);
+    printf("Tanggal         : %s\n", konserList[target].tanggal);
+    printf("Harga VIP       : %d\n", konserList[target].hargaVIP);
+    printf("Harga Reguler   : %d\n", konserList[target].hargaReguler);
+    printf("Deskripsi       :\n%s\n\n", konserList[target].deskripsi);
 
     printf("=====================================================\n");
     char konfirmasi;
@@ -289,7 +322,7 @@ void hapusKonser()
     {
         for (int i = target; i < jumlahKonser - 1; i++)
         {
-            // proses hapus = geser array
+            // proses hapus -> geser array
             konserList[i] = konserList[i + 1];
             konserList[i].id = i + 1;
         }

@@ -4,6 +4,60 @@
 #include <stdlib.h>
 #include <windows.h>
 
+char lower(char c)
+{
+    if (c >= 'A' && c <= 'Z')
+        return c + 32;
+    return c;
+}
+
+int panjang(char s[])
+{
+    int n = 0;
+    while (s[n] != '\0')
+        n++;
+    return n;
+}
+
+int cocok(char nama[], char cari[])
+{
+    int ln = panjang(nama);
+    int lc = panjang(cari);
+
+    for (int i = 0; i <= ln - lc; i++)
+    {
+        int sama = 1;
+        for (int j = 0; j < lc; j++)
+        {
+            if (lower(nama[i + j]) != lower(cari[j]))
+            {
+                sama = 0;
+                break;
+            }
+        }
+        if (sama)
+            return 1;
+    }
+
+    return 0;
+}
+
+int compareTanggal(const char *t1, const char *t2)
+{
+    int d1, m1, y1;
+    int d2, m2, y2;
+
+    sscanf(t1, "%d-%d-%d", &d1, &m1, &y1);
+    sscanf(t2, "%d-%d-%d", &d2, &m2, &y2);
+
+    if (y1 != y2)
+        return y1 - y2;
+    if (m1 != m2)
+        return m1 - m2;
+    return d1 - d2;
+}
+
+
 
 void menuUser()
 {
@@ -66,7 +120,7 @@ void lihatDaftarKonser()
     for (int i = 0; i < jumlahKonser; i++)
     {
         printf(" %-3d | %-25s | %-15s | %-11s | %d\n",
-               konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].harga);
+               konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].hargaReguler);
     }
     printf("===========================================================================\n");
     int idKonser;
@@ -80,7 +134,7 @@ void lihatDaftarKonser()
     }
     else
     {
-        countdownClear(1);
+        countdownClear(2);
         detailKonser(idKonser);
     }
 }
@@ -111,13 +165,16 @@ void detailKonser(int idKonser)
     printf("\n===============================================================\n");
     printf("                          DETAIL KONSER\n");
     printf("===============================================================\n");
-    printf("ID Konser      : %d\n", k.id);
-    printf("Nama           : %s\n", k.nama);
-    printf("Lokasi         : %s\n", k.lokasi);
-    printf("Tanggal        : %s\n", k.tanggal);
-    printf("Harga          : %d\n", k.harga);
-    printf("Deskripsi      :\n%s\n", k.deskripsi);
-    printf("===============================================================\n\n");
+    printf("ID Konser       : %d\n", k.id);
+    printf("Nama            : %s\n", k.nama);
+    printf("Lokasi          : %s\n", k.lokasi);
+    printf("Tanggal         : %s\n", k.tanggal);
+    printf("Harga VIP       : %d\n", k.hargaVIP);
+    printf("Kuota VIP       : %d\n", k.jumlahTiketVIP);
+    printf("Harga Reguler   : %d\n", k.hargaReguler);
+    printf("Kuota Reguler   : %d\n", k.jumlahTiketReguler);
+    printf("Deskripsi       :\n%s\n", k.deskripsi);
+    printf("===============================================================\n");
     printf("1. Pesan Tiket\n");
     printf("2. Kembali\n");
     printf("===============================================================\n\n");
@@ -125,17 +182,11 @@ void detailKonser(int idKonser)
     int menu;
     printf("\nPilih menu: ");
     scanf("%d", &menu);
-    getchar(); 
+    getchar();
 
     if (menu == 1)
     {
-        countdownClear(1);
-        char kursiTerpilih[5];
-        tampilanKursi(kursiTerpilih); 
-
-        if (kursiTerpilih[0] != '\0')
-        { formPemesananTiket(k.nama, k.harga, kursiTerpilih, k.tanggal);
-        }
+        formPemesananTiket(idKonser);
     }
     else if (menu == 2)
     {
@@ -151,157 +202,191 @@ void detailKonser(int idKonser)
     }
 }
 
+void formPemesananTiket(int idKonser)
+{
 
-void tampilanKursi(char kursiTerpilih[]) {
-    char seats[3][10] = {
-        {'O','O','X','O','O','O','X','O','O','O'},
-        {'O','X','X','O','O','O','O','O','O','O'},
-        {'O','O','O','O','X','O','O','X','O','O'}
-    };
+    struct Konser *k = &konserList[idKonser - 1];
 
-    char barisLabel[] = {'A', 'B', 'C'};
-
+    printf("\n===============================================================\n");
+    printf("                        PEMESANAN TIKET\n");
     printf("===============================================================\n");
-    printf("                          PILIH KURSI\n");
-    printf("===============================================================\n\n");
-    printf("Legenda: [O] = Kosong     [X] = Terisi\n\n");
-    printf("           PANGGUNG\n");
-    printf("-----------------------------------\n");
+    printf("Nama Pembeli : ");
+    char namaPembeli[50];
+    scanf(" %[^\n]", namaPembeli);
 
-    for (int i = 0; i < 3; i++) {
-        printf("  %c ", barisLabel[i]);
-        for (int j = 0; j < 10; j++) {
-            printf("[%c]", seats[i][j]);
-        }
-        printf("\n");
+    printf("\nPilih Jenis Tiket:\n");
+    printf("1. VIP     (Rp.%d) — Sisa: %d\n", k->hargaVIP, k->jumlahTiketVIP);
+    printf("2. Reguler (Rp.%d) — Sisa: %d\n", k->hargaReguler, k->jumlahTiketReguler);
+    printf("Pilihan: ");
+
+    int pilihan;
+    scanf("%d", &pilihan);
+
+    char jenis[20];
+    int harga = 0;
+    int *kuota = NULL;
+
+    if (pilihan == 1)
+    {
+        strcpy(jenis, "VIP");
+        harga = k->hargaVIP;
+        kuota = &k->jumlahTiketVIP;
     }
-
-    char pilihBaris;
-    int pilihKursi;
-    int idxBaris;
-
-    printf("\nPilih Baris (A/B/C): ");
-    scanf(" %c", &pilihBaris);
-
-    if (pilihBaris == 'A' || pilihBaris == 'a') idxBaris = 0;
-    else if (pilihBaris == 'B' || pilihBaris == 'b') idxBaris = 1;
-    else if (pilihBaris == 'C' || pilihBaris == 'c') idxBaris = 2;
-    else {
-        printf("[!] Baris tidak valid!\n");
-        kursiTerpilih[0] = '\0';
+    else if (pilihan == 2)
+    {
+        strcpy(jenis, "Reguler");
+        harga = k->hargaReguler;
+        kuota = &k->jumlahTiketReguler;
+    }
+    else
+    {
+        printf("[!] Jenis tiket tidak valid!\n");
+        countdownClear(2);
+        detailKonser(idKonser);
         return;
     }
 
-    printf("Pilih Nomor Kursi (1-10): ");
-    scanf("%d", &pilihKursi);
+    printf("Jumlah tiket yang dibeli : ");
+    int jumlah;
+    scanf("%d", &jumlah);
 
-    if (pilihKursi < 1 || pilihKursi > 10) {
-        printf("[!] Nomor kursi tidak valid!\n");
-        kursiTerpilih[0] = '\0';
+    if (jumlah <= 0)
+    {
+        printf("[!] Jumlah tidak valid!\n");
+        countdownClear(2);
+        detailKonser(idKonser);
         return;
     }
 
-    if (seats[idxBaris][pilihKursi - 1] == 'X') {
-        printf("[!] Kursi sudah terisi!\n");
-        kursiTerpilih[0] = '\0';
+    if (*kuota < jumlah)
+    {
+        printf("\n[!] Kuota tidak cukup!\n");
+        countdownClear(2);
+        detailKonser(idKonser);
         return;
     }
 
-    kursiTerpilih[0] = barisLabel[idxBaris];
-    kursiTerpilih[1] = '-';
+    *kuota -= jumlah;
 
-    if (pilihKursi == 10) {
-        kursiTerpilih[2] = '1';
-        kursiTerpilih[3] = '0';
-        kursiTerpilih[4] = '\0';
-    } else {
-        kursiTerpilih[2] = pilihKursi + '0';
-        kursiTerpilih[3] = '\0';
-    }
-
-    printf("\n[✓] Kursi %s berhasil dipilih!\n", kursiTerpilih);
-}
-
-
-void formPemesananTiket(char namaKonser[], int hargaKonser, char kursi[], char tanggal[]) {
-
-    strcpy(tiketSaya[jumlahTiket].namaKonser, namaKonser);
-    strcpy(tiketSaya[jumlahTiket].kursi, kursi);
-    strcpy(tiketSaya[jumlahTiket].tanggal, tanggal);
-    tiketSaya[jumlahTiket].harga = hargaKonser;
+    strcpy(tiketSaya[jumlahTiket].namaPembeli, namaPembeli);
+    strcpy(tiketSaya[jumlahTiket].namaKonser, k->nama);
+    strcpy(tiketSaya[jumlahTiket].tanggal, k->tanggal);
+    strcpy(tiketSaya[jumlahTiket].jenisTiket, jenis);
+    tiketSaya[jumlahTiket].idKonser =  k->id;
+    tiketSaya[jumlahTiket].jumlah = jumlah;
+    tiketSaya[jumlahTiket].totalHarga = harga * jumlah;
     jumlahTiket++;
+    countdownClear(2);
 
     printf("\n===============================================================\n");
     printf("                      PEMESANAN BERHASIL\n");
+    printf("===============================================================\n");
+    printf("Nama Pembeli : %s\n", namaPembeli);
+    printf("Konser       : %s\n", k->nama);
+    printf("Tanggal      : %s\n", k->tanggal);
+    printf("Jenis Tiket  : %s\n", jenis);
+    printf("Jumlah       : %d\n", jumlah);
+    printf("Total Harga  : %d\n", harga * jumlah);
     printf("===============================================================\n\n");
 
-    printf("Nama Konser : %s\n", namaKonser);
-    printf("Kursi       : %s\n", kursi);
-    printf("Harga       : %d\n", hargaKonser);
-
-    printf("\nTekan ENTER untuk kembali...");
-    getchar(); 
+    printf("Tekan ENTER untuk kembali...");
     getchar();
-
+    getchar();
+    countdownClear(2);
     menuUser();
 }
 
-
-void lihatTiketSaya() {
+void lihatTiketSaya()
+{
     printf("===============================================================\n");
     printf("                           TIKET SAYA\n");
     printf("===============================================================\n\n");
 
-    if (jumlahTiket == 0) {
-        printf("Anda belum memesan tiket apapun.\n");
-        printf("Tekan ENTER untuk kembali...");
-        getchar();
-        getchar();
+    if (jumlahTiket == 0)
+    {
+        printf("Anda belum memiliki tiket yang dipesan.\n");
+        printf("===============================================================\n\n");
+        countdownClear(3);
+        menuUser();
         return;
     }
 
-    printf("No | Nama Konser            | Kursi | Tanggal      | Harga\n");
-    printf("---------------------------------------------------------------\n");
+    printf("ID | Nama Konser              | Tanggal     | Jenis Tiket | Jumlah | Total Harga\n");
+    printf("----------------------------------------------------------------------------------\n");
 
-    for (int i = 0; i < jumlahTiket; i++) {
-        printf("%-3d| %-22s | %-5s | %-12s | %d\n", i+1, tiketSaya[i].namaKonser, tiketSaya[i].kursi, tiketSaya[i].tanggal, tiketSaya[i].harga);
+    for (int i = 0; i < jumlahTiket; i++)
+    {
+        printf(" %-3d | %-23s | %-11s | %-11s | %-6d | %d\n",
+               i + 1,
+               tiketSaya[i].namaKonser,
+               tiketSaya[i].tanggal,
+               tiketSaya[i].jenisTiket,
+               tiketSaya[i].jumlah,
+               tiketSaya[i].totalHarga);
     }
 
-    printf("\nTekan ENTER untuk kembali...");
+    printf("=====================================================================\n\n");
+
+    int pilihan;
+    printf("Masukkan No tiket untuk melihat detail (0 untuk kembali): ");
+    scanf("%d", &pilihan);
     getchar();
-    getchar();
+    if (pilihan == 0)
+    {
+        countdownClear(1);
+        menuUser();
+        return;
+    }
+    else
+    {
+        countdownClear(1);
+        detailTiket(pilihan-1);
+    }
 }
 
-char lower(char c) {
-    if (c >= 'A' && c <= 'Z') return c + 32;
-    return c;
-}
-
-int panjang(char s[]) {
-    int n = 0;
-    while (s[n] != '\0') n++;
-    return n;
-}
-
-int cocok(char nama[], char cari[]) {
-    int ln = panjang(nama);
-    int lc = panjang(cari);
-
-    for (int i = 0; i <= ln - lc; i++) {
-        int sama = 1;
-        for (int j = 0; j < lc; j++) {
-            if (lower(nama[i + j]) != lower(cari[j])) {
-                sama = 0;
-                break;
-            }
+void detailTiket(int idTiket)
+{
+    int target = -1;
+    for (int i = 0; i < jumlahTiket; i++)
+    {
+        if (i == idTiket)
+        {
+            target = i;
+            break;
         }
-        if (sama) return 1;
     }
 
-    return 0;
+    if (target == -1)
+    {
+        printf("\n[!] ID tiket tidak ditemukan!\n");
+        printf("Layar akan kembali ke menu sebelumnya...\n");
+        countdownClear(2);
+        lihatTiketSaya();
+        return;
+    }
+
+    struct Tiket t = tiketSaya[target];
+
+    printf("\n===============================================================\n");
+    printf("                          DETAIL TIKET\n");
+    printf("===============================================================\n");
+    printf("Nama Pembeli : %s\n", t.namaPembeli);
+    printf("Nama Konser  : %s\n", t.namaKonser);
+    printf("Tanggal      : %s\n", t.tanggal);
+    printf("Jenis Tiket  : %s\n", t.jenisTiket);
+    printf("Jumlah       : %d\n", t.jumlah);
+    printf("Total Harga  : %d\n", t.totalHarga);
+    printf("===============================================================\n\n");
+
+    printf("Tekan ENTER untuk kembali...");
+    getchar();
+    countdownClear(2);
+    lihatTiketSaya();
 }
 
-void searchConcert() {
+
+void searchConcert()
+{
     char cari[50];
     int ketemu = 0;
 
@@ -315,29 +400,54 @@ void searchConcert() {
     printf("\nHasil Pencarian:\n");
     printf("---------------------------------------------------------------\n");
 
-    for (int i = 0; i < 3; i++) {
-        if (cocok(konserList[i].nama, cari)) {
+    printf(" %-3s | %-25s | %-15s | %-11s | %-10s\n",
+           "No", "ID", "Nama Konser", "Lokasi", "Tanggal", "Harga");
+    printf("---------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < jumlahKonser; i++)
+    {
+        if (cocok(konserList[i].nama, cari))
+        {
             ketemu = 1;
-            printf("%d. %s\n", konserList[i].id, konserList[i].nama);
-            printf("   Lokasi : %s\n", konserList[i].lokasi);
-            printf("   Harga  : %d\n", konserList[i].harga);
-            printf("---------------------------------------------------------------\n");
+            printf("%-3d | %-3d | %-25s | %-15s | %-11s | %d\n",
+                   i + 1, konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].hargaReguler);
         }
     }
 
-    if (!ketemu) {
+
+    if (!ketemu)
+    {
         printf("Tidak ada konser dengan nama tersebut.\n");
         printf("---------------------------------------------------------------\n");
+    }
+    else
+    {
+        int idKonser;
+        printf("\nMasukkan No konser yang ingin dipesan (0 untuk kembali): ");
+        scanf("%d", &idKonser);
+        if (idKonser == 0)
+        {
+            countdownClear(1);
+            menuUser();
+            return;
+        }
+        else
+        {
+            countdownClear(2);
+            detailKonser(idKonser);
+        }
     }
 
     printf("\nTekan ENTER untuk kembali...");
     getchar();
     getchar();
+    countdownClear(2);
 
     menuUser();
 }
 
-void sortingKonser() {
+void sortingKonser()
+{
     int pilihan;
 
     printf("===============================================================\n");
@@ -347,38 +457,47 @@ void sortingKonser() {
     printf("Urutkan berdasarkan:\n");
     printf("1. Harga Termurah → Termahal\n");
     printf("2. Harga Termahal → Termurah\n");
-    printf("3. Tanggal Terdekat\n");
+    printf("3. Tanggal\n");
     printf("4. Nama (A-Z)\n\n");
-    printf("Pilih: ");
+    printf("Pilih (0 untuk kembali) : ");
     scanf("%d", &pilihan);
-    getchar(); 
+    getchar();
+    if (pilihan == 0)
+    {
+        countdownClear(1);
+        menuUser();
+    }
 
     struct Konser tempList[100];
-    for (int i = 0; i < jumlahKonser; i++) {
+    for (int i = 0; i < jumlahKonser; i++)
+    {
         tempList[i] = konserList[i];
     }
 
-    for (int i = 0; i < jumlahKonser - 1; i++) {
-        for (int j = 0; j < jumlahKonser - i - 1; j++) {
+    for (int i = 0; i < jumlahKonser - 1; i++)
+    {
+        for (int j = 0; j < jumlahKonser - i - 1; j++)
+        {
 
             int swap = 0;
 
-            if (pilihan == 1 && tempList[j].harga > tempList[j+1].harga)
+            if (pilihan == 1 && tempList[j].hargaReguler > tempList[j + 1].hargaReguler)
                 swap = 1;
 
-            if (pilihan == 2 && tempList[j].harga < tempList[j+1].harga)
+            if (pilihan == 2 && tempList[j].hargaReguler < tempList[j + 1].hargaReguler)
                 swap = 1;
 
-            if (pilihan == 3 && strcmp(tempList[j].tanggal, tempList[j+1].tanggal) > 0)
+            if (pilihan == 3 && compareTanggal(tempList[j].tanggal, tempList[j + 1].tanggal) > 0)
                 swap = 1;
 
-            if (pilihan == 4 && strcmp(tempList[j].nama, tempList[j+1].nama) > 0)
+            if (pilihan == 4 && strcmp(tempList[j].nama, tempList[j + 1].nama) > 0)
                 swap = 1;
 
-            if (swap) {
+            if (swap)
+            {
                 struct Konser t = tempList[j];
-                tempList[j] = tempList[j+1];
-                tempList[j+1] = t;
+                tempList[j] = tempList[j + 1];
+                tempList[j + 1] = t;
             }
         }
     }
@@ -390,17 +509,16 @@ void sortingKonser() {
            "No", "Nama Konser", "Lokasi", "Tanggal", "Harga");
     printf("---------------------------------------------------------------\n");
 
-    for (int i = 0; i < jumlahKonser; i++) {
+    for (int i = 0; i < jumlahKonser; i++)
+    {
         printf(" %-3d | %-25s | %-15s | %-11s | %d\n",
-               tempList[i].id, tempList[i].nama, tempList[i].lokasi,
-               tempList[i].tanggal, tempList[i].harga);
+               i + 1, tempList[i].nama, tempList[i].lokasi,
+               tempList[i].tanggal, tempList[i].hargaReguler);
     }
 
     printf("===============================================================\n");
     printf("Tekan ENTER untuk kembali...");
     getchar();
-
-    menuUser();
+    countdownClear(2);
+    sortingKonser();
 }
-
-
