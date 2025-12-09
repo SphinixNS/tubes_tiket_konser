@@ -3,11 +3,12 @@
 
 struct Akun
 {
+    int id;
     char username[50];
     char password[50];
     char role[10];
 };
-
+struct Akun akunSaatIni;
 struct Konser
 {
     int id;
@@ -23,7 +24,9 @@ struct Konser
 
 struct Tiket
 {
+    int id;
     int idKonser;
+    int idUser;
     char namaPembeli[50];
     char namaKonser[50];
     char jenisTiket[20];

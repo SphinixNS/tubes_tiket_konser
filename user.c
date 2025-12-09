@@ -272,11 +272,14 @@ void formPemesananTiket(int idKonser)
     strcpy(tiketSaya[jumlahTiket].namaKonser, k->nama);
     strcpy(tiketSaya[jumlahTiket].tanggal, k->tanggal);
     strcpy(tiketSaya[jumlahTiket].jenisTiket, jenis);
+    tiketSaya[jumlahTiket].id = jumlahTiket + 1;
     tiketSaya[jumlahTiket].idKonser =  k->id;
+    tiketSaya[jumlahTiket].idUser = akunSaatIni.id;
     tiketSaya[jumlahTiket].jumlah = jumlah;
     tiketSaya[jumlahTiket].totalHarga = harga * jumlah;
     jumlahTiket++;
     countdownClear(2);
+
 
     printf("\n===============================================================\n");
     printf("                      PEMESANAN BERHASIL\n");
@@ -311,24 +314,28 @@ void lihatTiketSaya()
         return;
     }
 
-    printf("ID | Nama Konser              | Tanggal     | Jenis Tiket | Jumlah | Total Harga\n");
+    printf("NO | ID | Nama Konser              | Tanggal     | Jenis Tiket | Jumlah | Total Harga\n");
     printf("----------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < jumlahTiket; i++)
     {
-        printf(" %-3d | %-23s | %-11s | %-11s | %-6d | %d\n",
+        if (tiketSaya[i].idUser == akunSaatIni.id)
+        {
+             printf(" %-3d | %-23s | %-11s | %-11s | %-6d | %d\n",
                i + 1,
+               tiketSaya[i].id,
                tiketSaya[i].namaKonser,
                tiketSaya[i].tanggal,
                tiketSaya[i].jenisTiket,
                tiketSaya[i].jumlah,
                tiketSaya[i].totalHarga);
+        }
     }
 
     printf("=====================================================================\n\n");
 
     int pilihan;
-    printf("Masukkan No tiket untuk melihat detail (0 untuk kembali): ");
+    printf("Masukkan ID tiket untuk melihat detail (0 untuk kembali): ");
     scanf("%d", &pilihan);
     getchar();
     if (pilihan == 0)

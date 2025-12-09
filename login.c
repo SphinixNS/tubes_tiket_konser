@@ -41,6 +41,19 @@ void tampilMenuAwal()
     }
 }
 
+int cekUsernameTerpakai(char username[50])
+{
+    for (int i = 0; i < jumlahAkun; i++)
+    {
+        if (strcmp(daftarAkun[i].username, username) == 0)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void tampilanRegister()
 {
     char username[50];
@@ -57,13 +70,24 @@ void tampilanRegister()
     printf("Masukkan Password Kamu : ");
     scanf("%s", password);
 
-    strcpy(daftarAkun[jumlahAkun].username, username);
-    strcpy(daftarAkun[jumlahAkun].password, password);
-    jumlahAkun++;
-
-    printf("\nYeay akun berhasil dibuat!\n");
-    countdownClear(2);
-    tampilMenuAwal();
+    if (cekUsernameTerpakai(username))
+    {
+        printf("\nUsername sudah terpakai! Silakan coba username lain.\n");
+        countdownClear(2);
+        tampilMenuAwal();
+    }
+    else
+    {
+        
+        daftarAkun[jumlahAkun].id = jumlahAkun;
+        strcpy(daftarAkun[jumlahAkun].username, username);
+        strcpy(daftarAkun[jumlahAkun].password, password);
+        strcpy(daftarAkun[jumlahAkun].role, "user");
+        jumlahAkun++;
+        printf("\nYeay akun berhasil dibuat!\n");
+        countdownClear(2);
+        tampilMenuAwal();
+    }
 }
 
 int cekLogin(char username[], char password[])
@@ -106,21 +130,20 @@ void tampilanLogin()
         int status = cekLogin(username, password);
         if (status == 1)
         {
-            struct Akun akun;
             for (int i = 0; i < jumlahAkun; i++)
             {
                 if (strcmp(daftarAkun[i].username, username) == 0)
                 {
                     if (strcmp(daftarAkun[i].password, password) == 0)
                     {
-                        akun = daftarAkun[i];
+                        akunSaatIni = daftarAkun[i];
                     }
                 }
             }
 
             printf("\nLogin berhasil! Selamat datang, %s.\n\n", username);
             countdownClear(2);
-            if (strcmp(akun.role, "admin") == 0)
+            if (strcmp(akunSaatIni.role, "admin") == 0)
             {
                 menuAdmin();
             }

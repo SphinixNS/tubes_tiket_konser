@@ -198,21 +198,44 @@ void editKonser(int idKonser)
     char deskripsi[200];
     printf("Nama Baru [%s]: ", k->nama);
     scanf(" %[^\n]", nama);
+    if (strlen(nama) == 0) {
+        strcpy(nama, k->nama); 
+    }
     printf("Lokasi Baru [%s]: ", k->lokasi);
     scanf(" %[^\n]", lokasi);
+    if (strlen(lokasi) == 0) {
+        strcpy(lokasi, k->lokasi); 
+    }
     printf("Tanggal Baru [%s]: ", k->tanggal);
     scanf(" %[^\n]", tanggal);
+    if (strlen(tanggal) == 0) {
+        strcpy(tanggal, k->tanggal); 
+    }
     printf("Harga VIP baru [%d]: ", k->hargaVIP);
     scanf("%d", &hargaVIP);
+    if (hargaVIP == 0) {
+        hargaVIP = k->hargaVIP;
+    }
     printf("Jumlah tiket VIP baru [%d]: ", k->jumlahTiketVIP);
     scanf("%d", &jumlahVIPBaru);
+    if (jumlahVIPBaru == 0) {
+        jumlahVIPBaru = k->jumlahTiketVIP;
+    }
     printf("Harga Reguler baru [%d]: ", k->hargaReguler);
     scanf("%d", &hargaReguler);
+    if (hargaReguler == 0) {
+        hargaReguler = k->hargaReguler;
+    }
     printf("Jumlah tiket Reguler baru [%d]: ", k->jumlahTiketReguler);
     scanf("%d", &jumlahRegBaru);
+    if (jumlahRegBaru == 0) {
+        jumlahRegBaru = k->jumlahTiketReguler;
+    }
     printf("Deskripsi Baru:\n> ");
     scanf(" %[^\n]", deskripsi);
-
+    if (strlen(deskripsi) == 0) {
+        strcpy(deskripsi, k->deskripsi); 
+    }
     countdownClear(2);
     printf("=====================================================\n");
     printf("              KONFIRMASI DATA KONSER EDIT            \n");

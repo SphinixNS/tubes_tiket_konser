@@ -6,11 +6,13 @@
 
 struct Akun daftarAkun[100] = {
     {
+        0,
         "admin",
         "admin123",
         "admin",
     },
-    {"novan", "123", "user"}};
+    {1, "novan", "123", "user"}};
+
 int jumlahAkun = 2;
 
 int jumlahKonser = 20;
@@ -61,3 +63,4 @@ struct Konser konserList[100] = {
 };
 struct Tiket tiketSaya[100];
 int jumlahTiket = 0;
+
