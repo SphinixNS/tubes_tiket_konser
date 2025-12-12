@@ -57,8 +57,6 @@ int compareTanggal(const char *t1, const char *t2)
     return d1 - d2;
 }
 
-
-
 void menuUser()
 {
     int pilihan;
@@ -205,7 +203,25 @@ void detailKonser(int idKonser)
 void formPemesananTiket(int idKonser)
 {
 
-    struct Konser *k = &konserList[idKonser - 1];
+    int index = -1;
+    for (int i = 0; i < jumlahKonser; i++)
+    {
+        if (konserList[i].id == idKonser)
+        {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index == -1)
+    {
+        printf("\n[!] ID tiket tidak ditemukan!\n");
+        printf("Layar akan kembali ke menu sebelumnya...\n");
+        countdownClear(2);
+        lihatDaftarKonser();
+        return;
+    }
+    struct Konser *k = &konserList[index];
 
     printf("\n===============================================================\n");
     printf("                        PEMESANAN TIKET\n");
@@ -273,13 +289,12 @@ void formPemesananTiket(int idKonser)
     strcpy(tiketSaya[jumlahTiket].tanggal, k->tanggal);
     strcpy(tiketSaya[jumlahTiket].jenisTiket, jenis);
     tiketSaya[jumlahTiket].id = jumlahTiket + 1;
-    tiketSaya[jumlahTiket].idKonser =  k->id;
+    tiketSaya[jumlahTiket].idKonser = k->id;
     tiketSaya[jumlahTiket].idUser = akunSaatIni.id;
     tiketSaya[jumlahTiket].jumlah = jumlah;
     tiketSaya[jumlahTiket].totalHarga = harga * jumlah;
     jumlahTiket++;
     countdownClear(2);
-
 
     printf("\n===============================================================\n");
     printf("                      PEMESANAN BERHASIL\n");
@@ -305,7 +320,17 @@ void lihatTiketSaya()
     printf("                           TIKET SAYA\n");
     printf("===============================================================\n\n");
 
-    if (jumlahTiket == 0)
+    int adaTiket = 0;
+    for (int i = 0; i < jumlahTiket; i++)
+    {
+        if (tiketSaya[i].idUser == akunSaatIni.id)
+        {
+            adaTiket = 1;
+            break;
+        }
+    }
+
+    if (adaTiket == 0)
     {
         printf("Anda belum memiliki tiket yang dipesan.\n");
         printf("===============================================================\n\n");
@@ -314,21 +339,23 @@ void lihatTiketSaya()
         return;
     }
 
-    printf("NO | ID | Nama Konser              | Tanggal     | Jenis Tiket | Jumlah | Total Harga\n");
+    printf(" %-3s | %-3s | %-23s | %-11s | %-11s | %-6s | %s\n",
+           "No", "ID", "Nama Konser", "Tanggal", "Jenis Tiket", "Jumlah", "Total Harga");
     printf("----------------------------------------------------------------------------------\n");
-
+    int no = 0;
     for (int i = 0; i < jumlahTiket; i++)
     {
         if (tiketSaya[i].idUser == akunSaatIni.id)
         {
-             printf(" %-3d | %-23s | %-11s | %-11s | %-6d | %d\n",
-               i + 1,
-               tiketSaya[i].id,
-               tiketSaya[i].namaKonser,
-               tiketSaya[i].tanggal,
-               tiketSaya[i].jenisTiket,
-               tiketSaya[i].jumlah,
-               tiketSaya[i].totalHarga);
+            no++;
+            printf(" %-3d | %-3d | %-23s | %-11s | %-11s | %-6d | %d\n",
+                   no,
+                   tiketSaya[i].id,
+                   tiketSaya[i].namaKonser,
+                   tiketSaya[i].tanggal,
+                   tiketSaya[i].jenisTiket,
+                   tiketSaya[i].jumlah,
+                   tiketSaya[i].totalHarga);
         }
     }
 
@@ -347,16 +374,17 @@ void lihatTiketSaya()
     else
     {
         countdownClear(1);
-        detailTiket(pilihan-1);
+        detailTiket(pilihan);
     }
 }
 
 void detailTiket(int idTiket)
 {
     int target = -1;
+
     for (int i = 0; i < jumlahTiket; i++)
     {
-        if (i == idTiket)
+        if (tiketSaya[i].id == idTiket)
         {
             target = i;
             break;
@@ -391,7 +419,6 @@ void detailTiket(int idTiket)
     lihatTiketSaya();
 }
 
-
 void searchConcert()
 {
     char cari[50];
@@ -420,7 +447,6 @@ void searchConcert()
                    i + 1, konserList[i].id, konserList[i].nama, konserList[i].lokasi, konserList[i].tanggal, konserList[i].hargaReguler);
         }
     }
-
 
     if (!ketemu)
     {

@@ -198,43 +198,47 @@ void editKonser(int idKonser)
     char deskripsi[200];
     printf("Nama Baru [%s]: ", k->nama);
     scanf(" %[^\n]", nama);
-    if (strlen(nama) == 0) {
-        strcpy(nama, k->nama); 
+    if (strcmp(nama, "-") == 0)
+    {
+        strcpy(nama, k->nama);
     }
     printf("Lokasi Baru [%s]: ", k->lokasi);
     scanf(" %[^\n]", lokasi);
-    if (strlen(lokasi) == 0) {
-        strcpy(lokasi, k->lokasi); 
+    if (strcmp(lokasi, "-") == 0)
+    {
+        strcpy(lokasi, k->lokasi);
     }
     printf("Tanggal Baru [%s]: ", k->tanggal);
     scanf(" %[^\n]", tanggal);
-    if (strlen(tanggal) == 0) {
-        strcpy(tanggal, k->tanggal); 
+    if (strcmp(tanggal, "-") == 0)
+    {
+        strcpy(tanggal, k->tanggal);
     }
-    printf("Harga VIP baru [%d]: ", k->hargaVIP);
+    printf("Harga VIP baru [%d] (-1 jika tidak di edit): ", k->hargaVIP);
     scanf("%d", &hargaVIP);
-    if (hargaVIP == 0) {
+    if (hargaVIP == -1) {
         hargaVIP = k->hargaVIP;
     }
-    printf("Jumlah tiket VIP baru [%d]: ", k->jumlahTiketVIP);
+    printf("Jumlah tiket VIP baru [%d] (-1 jika tidak di edit): ", k->jumlahTiketVIP);
     scanf("%d", &jumlahVIPBaru);
-    if (jumlahVIPBaru == 0) {
+    if (jumlahVIPBaru == -1) {
         jumlahVIPBaru = k->jumlahTiketVIP;
     }
-    printf("Harga Reguler baru [%d]: ", k->hargaReguler);
+    printf("Harga Reguler baru [%d] (-1 jika tidak di edit): ", k->hargaReguler);
     scanf("%d", &hargaReguler);
-    if (hargaReguler == 0) {
+    if (hargaReguler == -1) {
         hargaReguler = k->hargaReguler;
     }
-    printf("Jumlah tiket Reguler baru [%d]: ", k->jumlahTiketReguler);
+    printf("Jumlah tiket Reguler baru [%d] (-1 jika tidak di edit): ", k->jumlahTiketReguler);
     scanf("%d", &jumlahRegBaru);
-    if (jumlahRegBaru == 0) {
+    if (jumlahRegBaru == -1) {
         jumlahRegBaru = k->jumlahTiketReguler;
     }
     printf("Deskripsi Baru:\n> ");
     scanf(" %[^\n]", deskripsi);
-    if (strlen(deskripsi) == 0) {
-        strcpy(deskripsi, k->deskripsi); 
+    if (strcmp(deskripsi, "-") == 0)
+    {
+        strcpy(deskripsi, k->deskripsi);
     }
     countdownClear(2);
     printf("=====================================================\n");
